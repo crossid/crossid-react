@@ -6,6 +6,9 @@
   "main": "index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/*.{js,ts,map}"
+  ],
   "scripts": {
     "build": "rimraf dist && rollup -m -c --environment NODE_ENV:production",
     "start": "rollup -cw"
