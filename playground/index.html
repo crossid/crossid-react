@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>crossid-react playground</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/@babel/standalone@7.13.12/babel.min.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/react-router-dom@5.2.0/umd/react-router-dom.min.js"></script>
+    <script src="crossid-react.js"></script>
+    <script type="text/babel">
+      const { useState } = React
+      const { CrossidAuthProvider, useCrossidAuth, useCrossidAuthActions } =
+        reactCrossid
+      const App = () => {
+        const { loading, error } = useCrossidAuth()
+        const { loginWithRedirect, getAccessToken } = useCrossidAuthActions()
+        const accessToken = getAccessToken()
+
+        if (error) {
+          return <div>ERROR: ${error.message}</div>
+        }
+
+        if (loading) {
+          return <div>Loading...</div>
+        }
+
+        return (
+          <div>
+            {accessToken && <div>accessToken: {accessToken}</div>}
+            <div>
+              <button onClick={() => loginWithRedirect({}, '/')}>Login</button>
+              <button onClick={() => setAccessToken(getAccessToken())}>
+                Get access token
+              </button>
+            </div>
+          </div>
+        )
+      }
+
+      ReactDOM.render(
+        <CrossidAuthProvider
+          tenant_id="indexia"
+          client_id="DMjxjVJEJ8ROScoxHEWw4gvmSerBZhdg"
+          redirect_uri={`${window.location.origin}/`}
+          // TODO: without this, client causes 'cannot read property 0 of undefined'
+          audience={['example.com']}
+          scope="openid"
+        >
+          <App />
+        </CrossidAuthProvider>,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>
