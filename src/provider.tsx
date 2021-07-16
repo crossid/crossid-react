@@ -14,6 +14,10 @@ import {
 import CrossidClient from '@crossid/crossid-spa-js/dist/client'
 import { useCallback } from 'react'
 
+function stub(): any {
+  throw new Error('please wrap your app with CrossidAuthProvider')
+}
+
 /**
  * The state which is returned when using the auth hook.
  */
@@ -28,11 +32,13 @@ const AuthContext = createContext<AuthState>({
 })
 
 interface AuthActions {
-  loginWithRedirect: (opts: AuthorizationOpts, returnTo: string) => void
-  getAccessToken: (opts: GetAccessTokenOpts) => Promise<string>
+  loginWithRedirect: (opts?: AuthorizationOpts, returnTo?: string) => void
+  getAccessToken: (opts?: GetAccessTokenOpts) => Promise<string>
 }
-
-const AuthActionsContext = createContext<Partial<AuthActions>>({})
+const AuthActionsContext = createContext<AuthActions>({
+  loginWithRedirect: stub,
+  getAccessToken: stub,
+})
 
 class AuthProviderOptsBase {
   children: React.ReactNode
