@@ -5,7 +5,6 @@ import {
   ClientOpts,
   ClientDiscoveryOpts,
   ClientCrossidOpts,
-  GetUserOpts,
   AuthorizationOpts,
   GetAccessTokenOpts,
   newCrossidClient,
@@ -30,17 +29,10 @@ const AuthContext = createContext<AuthState>({
 
 interface AuthActions {
   loginWithRedirect: (opts: AuthorizationOpts, returnTo: string) => void
-  getAccessToken: (opts: GetAccessTokenOpts) => string
-  getUser: (opts: GetUserOpts) => void
+  getAccessToken: (opts: GetAccessTokenOpts) => Promise<string>
 }
-function stub(opts: any): any {
-  throw new Error('please wrap your app with CrossidProvider')
-}
-const AuthActionsContext = createContext<AuthActions>({
-  loginWithRedirect: stub,
-  getAccessToken: stub,
-  getUser: stub,
-})
+
+const AuthActionsContext = createContext<Partial<AuthActions>>({})
 
 class AuthProviderOptsBase {
   children: React.ReactNode
@@ -58,12 +50,6 @@ interface AuthProviderClientDiscoveryOpts
 interface AuthProviderClientCustomOpts
   extends ClientOpts,
     AuthProviderOptsBase {}
-
-declare global {
-  interface Window {
-    '@crossid': Client
-  }
-}
 
 export const useCrossidAuth = () => useContext(AuthContext)
 export const useCrossidAuthActions = () => useContext(AuthActionsContext)
@@ -93,26 +79,12 @@ const initClient = async (props: AuthProps): Promise<CrossidClient> => {
   }
 }
 
-async function getUser({
-  client,
-  setUser,
-  opts,
-}: {
-  client?: Client
-  setUser: Function
-  opts?: AuthorizationOpts
-}) {
-  const user = await client?.getUser(opts)
-  setUser(user)
-}
-
-const CrossidProvider = <T extends IDToken>(props: AuthProps): JSX.Element => {
+const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
   const [client, setClient] = useState<Client>()
   const [error, setError] = useState()
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<T | undefined>()
+  const [user, setUser] = useState<U | undefined>()
 
-  const [accessToken, setAccessToken] = useState<string>('')
   const { goTo } = props
   /**
    * initializes the client upon provider initialization
@@ -123,25 +95,26 @@ const CrossidProvider = <T extends IDToken>(props: AuthProps): JSX.Element => {
         try {
           const c = await initClient(props)
           setClient(c)
-          window['@crossid'] = c
-          await getUser({ client: c, setUser })
+          const u = await c.getUser<U>()
+          setUser(u)
         } catch (e) {
           setError(e)
-        } finally {
           setLoading(false)
+        } finally {
+          return
         }
       }
-    })()
-  }, [client, props])
 
-  useEffect(() => {
-    ;(async () => {
       const { origin, pathname } = window.location
       const sp = new URLSearchParams(window.location.search)
-      if (origin + pathname === props.redirect_uri && sp.has('code')) {
-        const resp = await client?.handleRedirectCallback()
-        setLoading(true)
-        await getUser({ client, setUser })
+      if (
+        client &&
+        origin + pathname === props.redirect_uri &&
+        sp.has('code')
+      ) {
+        const resp = await client.handleRedirectCallback()
+        const user = await client.getUser<U>()
+        setUser(user)
         setLoading(false)
         if (!!resp?.state) {
           if (goTo) {
@@ -150,9 +123,12 @@ const CrossidProvider = <T extends IDToken>(props: AuthProps): JSX.Element => {
             window.history.replaceState({}, document.title, resp.state)
           }
         }
+      } else {
+        setLoading(false)
       }
     })()
-  }, [client, goTo, props.redirect_uri])
+    // todo: adding client causes errors
+  }, [client, goTo, props])
 
   const loginWithRedirect = useCallback(
     (opts: AuthorizationOpts = {}, returnTo: string) => {
@@ -162,26 +138,18 @@ const CrossidProvider = <T extends IDToken>(props: AuthProps): JSX.Element => {
     [client]
   )
 
-  async function _getUser(opts: AuthorizationOpts) {
-    getUser({ client, setUser, opts })
-  }
-
   const getAccessToken = useCallback(
-    (opts: GetAccessTokenOpts): string => {
-      ;(async () => {
-        const act = await client?.getAccessToken(opts)
-        setAccessToken(act || '')
-      })()
-
-      return accessToken
+    async (opts?: GetAccessTokenOpts): Promise<string> => {
+      const act = await client?.getAccessToken(opts)
+      return act || ''
     },
-    [accessToken, client]
+    [client]
   )
 
   return (
     <AuthContext.Provider value={{ user, error, loading, client }}>
       <AuthActionsContext.Provider
-        value={{ loginWithRedirect, getUser: _getUser, getAccessToken }}
+        value={{ loginWithRedirect, getAccessToken }}
       >
         {props.children}
       </AuthActionsContext.Provider>
@@ -189,4 +157,4 @@ const CrossidProvider = <T extends IDToken>(props: AuthProps): JSX.Element => {
   )
 }
 
-export default CrossidProvider
+export default AuthProvider
