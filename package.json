@@ -16,7 +16,7 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@crossid/crossid-spa-js": "^0.0.4"
+    "@crossid/crossid-spa-js": "^0.0.5"
   },
   "peerDependencies": {
     "react": "^17.0.2"
