@@ -73,6 +73,7 @@
 								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#CrossidAuthProvider" class="tsd-kind-icon">Crossid<wbr>Auth<wbr>Provider</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#useAuth" class="tsd-kind-icon">use<wbr>Auth</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#useAuthActions" class="tsd-kind-icon">use<wbr>Auth<wbr>Actions</a></li>
+								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#withAuth" class="tsd-kind-icon">with<wbr>Auth</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,7 +91,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/b15efa9/src/provider.tsx#L90">provider.tsx:90</a></li>
+									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/70b8ba2/src/provider.tsx#L90">provider.tsx:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -119,7 +120,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/b15efa9/src/provider.tsx#L62">provider.tsx:62</a></li>
+									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/70b8ba2/src/provider.tsx#L62">provider.tsx:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="interfaces/AuthState.html" class="tsd-signature-type" data-tsd-kind="Interface">AuthState</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IDToken</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -136,10 +137,60 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/b15efa9/src/provider.tsx#L63">provider.tsx:63</a></li>
+									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/70b8ba2/src/provider.tsx#L63">provider.tsx:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AuthActions</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter">
+					<a name="withAuth" class="tsd-anchor"></a>
+					<h3>with<wbr>Auth</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">with<wbr>Auth&lt;T&gt;<span class="tsd-signature-symbol">(</span>WrappedComponent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">AuthRequiredOpts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Element</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/70b8ba2/src/with-auth.tsx#L11">with-auth.tsx:11</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>WrappedComponent: <span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>opts: <span class="tsd-signature-type">AuthRequiredOpts</span><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Element</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-signature">
+									<ul class="tsd-signatures tsd-kind-type-literal">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>props: <span class="tsd-signature-type">T</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
