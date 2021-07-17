@@ -16,7 +16,7 @@ jobs:
       - name: Install
         run: npm install
       - name: Test
-       run: npm test
+        run: npm test
       - name: Build
         run: npm run build
       - name: Publish
