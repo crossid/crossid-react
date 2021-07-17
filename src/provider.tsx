@@ -32,7 +32,7 @@ const AuthContext = createContext<AuthState>({
 })
 
 interface AuthActions {
-  loginWithRedirect: (opts?: AuthorizationOpts, returnTo?: string) => void
+  loginWithRedirect: (opts: AuthorizationOpts, returnTo: string) => void
   getAccessToken: (opts?: GetAccessTokenOpts) => Promise<string>
 }
 const AuthActionsContext = createContext<AuthActions>({
@@ -145,7 +145,7 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
   )
 
   const getAccessToken = useCallback(
-    async (opts?: GetAccessTokenOpts): Promise<string> => {
+    async (opts: GetAccessTokenOpts = {}): Promise<string> => {
       const act = await client?.getAccessToken(opts)
       return act || ''
     },
