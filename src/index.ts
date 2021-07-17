@@ -4,4 +4,9 @@ import CrossidAuthProvider, {
   useCrossidAuthActions,
 } from './provider'
 
-export { CrossidAuthProvider, AuthState, useCrossidAuth, useCrossidAuthActions }
+export {
+  CrossidAuthProvider,
+  AuthState,
+  useCrossidAuth as useAuth,
+  useCrossidAuthActions as useAuthActions,
+}
