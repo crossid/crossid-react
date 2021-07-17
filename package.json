@@ -13,8 +13,24 @@
     "build": "rimraf dist && rollup -m -c --environment NODE_ENV:production",
     "start": "rollup -cw"
   },
-  "keywords": [],
+  "keywords": [
+    "crossid",
+    "signin",
+    "login",
+    "openid",
+    "OIDC",
+    "OAuth2",
+    "PKCE",
+    "react"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crossid/crossid-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/crossid/crossid-react/issues"
+  },
   "dependencies": {
     "@crossid/crossid-spa-js": "^0.0.5"
   },
