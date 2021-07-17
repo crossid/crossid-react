@@ -27,7 +27,8 @@ export interface AuthState<User extends IDToken = IDToken> {
   user?: User
   client?: Client
 }
-const AuthContext = createContext<AuthState>({
+
+export const AuthContext = createContext<AuthState>({
   loading: true,
 })
 
@@ -35,7 +36,8 @@ interface AuthActions {
   loginWithRedirect: (opts: AuthorizationOpts, returnTo: string) => void
   getAccessToken: (opts?: GetAccessTokenOpts) => Promise<string>
 }
-const AuthActionsContext = createContext<AuthActions>({
+
+export const AuthActionsContext = createContext<AuthActions>({
   loginWithRedirect: stub,
   getAccessToken: stub,
 })
