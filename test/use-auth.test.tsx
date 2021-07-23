@@ -9,6 +9,7 @@ describe('CrossidAuthProvider', () => {
       <CrossidAuthProvider
         authorization_endpoint="https://myorg.crossid.io/oauth2/default/auth"
         token_endpoint="https://myorg.crossid.io/oauth2/default/token"
+        logout_endpoint="https://myorg.crossid.io/oauth2/default/logout"
         issuer="https://myorg.crossid.io/oauth2/default"
         client_id="client_test1"
       >

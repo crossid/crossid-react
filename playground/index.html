@@ -21,13 +21,21 @@
     <script src="https://unpkg.com/react-router-dom@5.2.0/umd/react-router-dom.min.js"></script>
     <script src="crossid-react.js"></script>
     <script type="text/babel">
-      const { useState } = React
-      const { CrossidAuthProvider, useCrossidAuth, useCrossidAuthActions } =
-        reactCrossid
+      const { useState, useEffect } = React
+      const { CrossidAuthProvider, useAuth, useAuthActions } = reactCrossid
       const App = () => {
-        const { loading, user, error } = useCrossidAuth()
-        const { loginWithRedirect, getAccessToken } = useCrossidAuthActions()
+        const { loading, user, error } = useAuth()
+        const { loginWithRedirect, logoutWithRedirect, getAccessToken } =
+          useAuthActions()
+        const [errorMsg, setErrorMsg] = useState()
         const [accessToken, setAccessToken] = useState()
+
+        useEffect(() => {
+          const qp = new URLSearchParams(window.location.search)
+          if (qp.has('error')) {
+            setErrorMsg(qp.get('error_description') || qp.get('error'))
+          }
+        }, [])
 
         if (error) {
           return <div>ERROR: ${error.message}</div>
@@ -39,6 +47,12 @@
 
         return (
           <div>
+            {error ||
+              (errorMsg && (
+                <div style={{ backgroundColor: '#FEE2E2', padding: '10px' }}>
+                  {error || errorMsg}
+                </div>
+              ))}
             {accessToken && (
               <div>
                 <h2>Access Token:</h2>
@@ -57,7 +71,12 @@
                 onClick={async () => setAccessToken(await getAccessToken())}
               >
                 Get access token
-              </button>
+              </button>{' '}
+              {user && (
+                <button onClick={() => logoutWithRedirect({ state: '/' }, '/')}>
+                  Logout
+                </button>
+              )}
             </div>
           </div>
         )
@@ -65,11 +84,13 @@
 
       ReactDOM.render(
         <CrossidAuthProvider
-          tenant_id="indexia"
-          client_id="DMjxjVJEJ8ROScoxHEWw4gvmSerBZhdg"
+          tenant_id="dev.local"
+          client_id="b3ZGQRRBwbXb4eDekGGNMwxvSAeWcjd8"
           redirect_uri={`${window.location.origin}/`}
+          post_logout_redirect_uri={`${window.location.origin}/`}
           audience={['example.com']}
           scope="openid"
+          cache_type="session_storage"
         >
           <App />
         </CrossidAuthProvider>,

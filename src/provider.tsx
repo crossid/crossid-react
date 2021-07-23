@@ -6,6 +6,7 @@ import {
   ClientDiscoveryOpts,
   ClientCrossidOpts,
   AuthorizationOpts,
+  LogoutOpts,
   GetAccessTokenOpts,
   newCrossidClient,
   newCrossidClientByDiscovery,
@@ -34,17 +35,20 @@ export const AuthContext = createContext<AuthState>({
 
 interface AuthActions {
   loginWithRedirect: (opts: AuthorizationOpts, returnTo: string) => void
+  logoutWithRedirect: (opts: LogoutOpts) => void
   getAccessToken: (opts?: GetAccessTokenOpts) => Promise<string>
 }
 
 export const AuthActionsContext = createContext<AuthActions>({
   loginWithRedirect: stub,
+  logoutWithRedirect: stub,
   getAccessToken: stub,
 })
 
 class AuthProviderOptsBase {
   children: React.ReactNode
   goTo?: (url: string) => void
+  post_logout_redirect_uri?: string
 }
 
 interface AuthProviderClientCrossidOpts
@@ -115,14 +119,32 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
 
       const { origin, pathname } = window.location
       const sp = new URLSearchParams(window.location.search)
+      debugger
       if (
         client &&
         origin + pathname === props.redirect_uri &&
-        sp.has('code')
+        sp.has('code') &&
+        !sp.has('error')
       ) {
         const resp = await client.handleRedirectCallback()
         const user = await client.getUser<U>()
         setUser(user)
+        setLoading(false)
+        if (!!resp?.state) {
+          if (goTo) {
+            goTo(resp.state)
+          } else {
+            window.history.replaceState({}, document.title, resp.state)
+          }
+        }
+      } else if (
+        client &&
+        origin + pathname === props.post_logout_redirect_uri &&
+        sp.has('state') &&
+        !sp.has('error')
+      ) {
+        const resp = await client.handleLogoutRedirectCallback()
+        setUser(undefined)
         setLoading(false)
         if (!!resp?.state) {
           if (goTo) {
@@ -146,6 +168,16 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
     [client]
   )
 
+  const logoutWithRedirect = useCallback(
+    (opts: LogoutOpts = {}) => {
+      if (!opts.post_logout_redirect_uri) {
+        opts.post_logout_redirect_uri = props.post_logout_redirect_uri
+      }
+      client?.logoutWithRedirect(opts)
+    },
+    [client]
+  )
+
   const getAccessToken = useCallback(
     async (opts: GetAccessTokenOpts = {}): Promise<string> => {
       const act = await client?.getAccessToken(opts)
@@ -157,7 +189,7 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
   return (
     <AuthContext.Provider value={{ user, error, loading, client }}>
       <AuthActionsContext.Provider
-        value={{ loginWithRedirect, getAccessToken }}
+        value={{ loginWithRedirect, logoutWithRedirect, getAccessToken }}
       >
         {props.children}
       </AuthActionsContext.Provider>
