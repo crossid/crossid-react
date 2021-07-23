@@ -1,3 +1,11 @@
+## 0.1.0
+
+[All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.0.2...v0.1.0)
+
+### Major Changes
+
+- logout via redirect.
+
 ## 0.0.2
 
 [All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.0.1...v0.0.2)
