@@ -1,3 +1,9 @@
+## 0.1.2
+
+### Minor Changes
+
+- export handle login state
+
 ## 0.1.1
 
 [All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.1.0...v0.1.1)
