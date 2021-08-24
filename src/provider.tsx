@@ -27,6 +27,7 @@ export interface AuthState<User extends IDToken = IDToken> {
   error?: Error
   user?: User
   client?: Client
+  loginState?: string | null
 }
 
 export const AuthContext = createContext<AuthState>({
@@ -91,11 +92,14 @@ const initClient = async (props: AuthProps): Promise<CrossidClient> => {
   }
 }
 
+const returnToReg = new RegExp(/returnTo=(.*)/i)
+
 const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
   const [client, setClient] = useState<Client>()
   const [error, setError] = useState()
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<U | undefined>()
+  const [loginState, setLoginState] = useState<string | null>(null)
 
   const { goTo } = props
   /**
@@ -119,7 +123,6 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
 
       const { origin, pathname } = window.location
       const sp = new URLSearchParams(window.location.search)
-      debugger
       if (
         client &&
         origin + pathname === props.redirect_uri &&
@@ -131,8 +134,10 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
         setUser(user)
         setLoading(false)
         if (!!resp?.state) {
+          setLoginState(resp.state)
+          const returnTo = (resp.state.match(returnToReg) || [])[1]
           if (goTo) {
-            goTo(resp.state)
+            goTo(returnTo)
           } else {
             window.history.replaceState({}, document.title, resp.state)
           }
@@ -147,10 +152,11 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
         setUser(undefined)
         setLoading(false)
         if (!!resp?.state) {
+          const returnTo = (resp.state.match(returnToReg) || [])[1]
           if (goTo) {
-            goTo(resp.state)
+            goTo(returnTo)
           } else {
-            window.history.replaceState({}, document.title, resp.state)
+            window.history.replaceState({}, document.title, returnTo)
           }
         }
       } else {
@@ -162,7 +168,8 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
 
   const loginWithRedirect = useCallback(
     (opts: AuthorizationOpts = {}, returnTo: string) => {
-      opts.state = returnTo
+      setLoginState('attempted')
+      opts.state = `${opts.state}&returnTo=${returnTo}`
       client?.loginWithRedirect(opts)
     },
     [client]
@@ -187,7 +194,7 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
   )
 
   return (
-    <AuthContext.Provider value={{ user, error, loading, client }}>
+    <AuthContext.Provider value={{ user, error, loading, client, loginState }}>
       <AuthActionsContext.Provider
         value={{ loginWithRedirect, logoutWithRedirect, getAccessToken }}
       >

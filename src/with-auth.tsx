@@ -6,18 +6,25 @@ import {
 
 export interface AuthRequiredOpts {
   returnTo?: string
+  scope?: string
+}
+
+function didTryLogin(state: string) {
+  return state.indexOf('attemptedLogin=true') > -1
 }
 
 export function withAuth<T>(
   WrappedComponent: React.ComponentType<T>,
+  ErrorComponent: Function,
   opts: AuthRequiredOpts = {}
 ) {
   const Comp = (props: T): JSX.Element => {
     let rendered = useRef(false)
     const [authenticated, setAuthenticated] = useState(false)
-    const { loading, client } = useAuth()
+    const [deniedAccess, setDeniedAccess] = useState(false)
+    const { loading, client, loginState = '' } = useAuth()
     const { loginWithRedirect } = useAuthActions()
-    const { returnTo = defaultReturnTo() } = opts
+    const { returnTo = defaultReturnTo(), scope } = opts
 
     useEffect(() => {
       rendered.current = true
@@ -26,24 +33,52 @@ export function withAuth<T>(
       }
 
       ;(async () => {
-        const at = await client?.getUser()
-        if (at && rendered) {
-          setAuthenticated(true)
+        const hasUser = await client?.getUser()
+        if (!hasUser) {
+          await loginWithRedirect(
+            { scope, state: `attemptedLogin=true` },
+            returnTo
+          )
           return
         }
-        await loginWithRedirect({}, returnTo)
+
+        if (!loginState) {
+          return
+        }
+
+        const at = await client?.getUser({ scope })
+        if (at && rendered) {
+          setAuthenticated(true)
+        } else if (didTryLogin(loginState)) {
+          setDeniedAccess(true)
+        } else {
+          await loginWithRedirect(
+            { scope, state: `attemptedLogin=true` },
+            returnTo
+          )
+        }
       })()
 
       return () => {
         rendered.current = false
       }
-    }, [authenticated, client, loading, loginWithRedirect, returnTo])
+    }, [
+      authenticated,
+      client,
+      loading,
+      loginState,
+      loginWithRedirect,
+      returnTo,
+      scope,
+    ])
 
-    return authenticated ? (
-      <WrappedComponent {...props} />
-    ) : (
-      <div>Loading...</div>
-    )
+    if (authenticated) {
+      return <WrappedComponent {...props} />
+    }
+    if (deniedAccess) {
+      return ErrorComponent()
+    }
+    return <div>Loading...</div>
   }
 
   return Comp
