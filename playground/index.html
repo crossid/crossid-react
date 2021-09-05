@@ -24,9 +24,14 @@
       const { useState, useEffect } = React
       const { CrossidAuthProvider, useAuth, useAuthActions } = reactCrossid
       const App = () => {
-        const { loading, user, error } = useAuth()
-        const { loginWithRedirect, logoutWithRedirect, getAccessToken } =
-          useAuthActions()
+        const {
+          loading,
+          user,
+          error,
+          loginWithRedirect,
+          logoutWithRedirect,
+          getAccessToken,
+        } = useAuth()
         const [errorMsg, setErrorMsg] = useState()
         const [accessToken, setAccessToken] = useState()
 

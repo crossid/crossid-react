@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  useCrossidAuth as useAuth,
-  useCrossidAuthActions as useAuthActions,
-} from './provider'
+import { useCrossidAuth as useAuth } from './provider'
 
 export interface AuthRequiredOpts {
   returnTo?: string
@@ -15,8 +12,7 @@ export function withAuth<T>(
   const Comp = (props: T): JSX.Element => {
     let rendered = useRef(false)
     const [authenticated, setAuthenticated] = useState(false)
-    const { loading, client } = useAuth()
-    const { loginWithRedirect } = useAuthActions()
+    const { loading, client, loginWithRedirect } = useAuth()
     const { returnTo = defaultReturnTo() } = opts
 
     useEffect(() => {

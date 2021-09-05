@@ -27,19 +27,13 @@ export interface AuthState<User extends IDToken = IDToken> {
   error?: Error
   user?: User
   client?: Client
-}
-
-export const AuthContext = createContext<AuthState>({
-  loading: true,
-})
-
-interface AuthActions {
   loginWithRedirect: (opts: AuthorizationOpts, returnTo: string) => void
   logoutWithRedirect: (opts: LogoutOpts) => void
   getAccessToken: (opts?: GetAccessTokenOpts) => Promise<string>
 }
 
-export const AuthActionsContext = createContext<AuthActions>({
+export const AuthContext = createContext<AuthState>({
+  loading: true,
   loginWithRedirect: stub,
   logoutWithRedirect: stub,
   getAccessToken: stub,
@@ -64,7 +58,6 @@ interface AuthProviderClientCustomOpts
     AuthProviderOptsBase {}
 
 export const useCrossidAuth = () => useContext(AuthContext)
-export const useCrossidAuthActions = () => useContext(AuthActionsContext)
 
 type AuthProps =
   | AuthProviderClientCrossidOpts
@@ -119,7 +112,6 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
 
       const { origin, pathname } = window.location
       const sp = new URLSearchParams(window.location.search)
-      debugger
       if (
         client &&
         origin + pathname === props.redirect_uri &&
@@ -187,12 +179,18 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
   )
 
   return (
-    <AuthContext.Provider value={{ user, error, loading, client }}>
-      <AuthActionsContext.Provider
-        value={{ loginWithRedirect, logoutWithRedirect, getAccessToken }}
-      >
-        {props.children}
-      </AuthActionsContext.Provider>
+    <AuthContext.Provider
+      value={{
+        user,
+        error,
+        loading,
+        client,
+        loginWithRedirect,
+        logoutWithRedirect,
+        getAccessToken,
+      }}
+    >
+      {props.children}
     </AuthContext.Provider>
   )
 }
