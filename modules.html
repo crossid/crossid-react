@@ -64,15 +64,15 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface"><a href="interfaces/AppState.html" class="tsd-kind-icon">App<wbr>State</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/AuthState.html" class="tsd-kind-icon">Auth<wbr>State</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#CrossidAuthProvider" class="tsd-kind-icon">Crossid<wbr>Auth<wbr>Provider</a></li>
-								<li class="tsd-kind-function"><a href="modules.html#useAuth" class="tsd-kind-icon">use<wbr>Auth</a></li>
-								<li class="tsd-kind-function"><a href="modules.html#useAuthActions" class="tsd-kind-icon">use<wbr>Auth<wbr>Actions</a></li>
+								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#AuthProvider" class="tsd-kind-icon">Auth<wbr>Provider</a></li>
+								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useAuth" class="tsd-kind-icon">use<wbr>Auth</a></li>
 								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#withAuth" class="tsd-kind-icon">with<wbr>Auth</a></li>
 							</ul>
 						</section>
@@ -82,22 +82,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter">
-					<a name="CrossidAuthProvider" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Crossid<wbr>Auth<wbr>Provider</h3>
+					<a name="AuthProvider" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Auth<wbr>Provider</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Crossid<wbr>Auth<wbr>Provider&lt;U&gt;<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AuthProps</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
+						<li class="tsd-signature tsd-kind-icon">Auth<wbr>Provider&lt;T&gt;<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AuthProps</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/83c988e/src/provider.tsx#L97">provider.tsx:97</a></li>
+									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/3c8922a/src/provider.tsx#L53">provider.tsx:53</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
-									<h4>U<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDToken</span></h4>
+									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDToken</span></h4>
 								</li>
 							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -110,37 +110,47 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter">
 					<a name="useAuth" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> use<wbr>Auth</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">use<wbr>Auth<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/AuthState.html" class="tsd-signature-type" data-tsd-kind="Interface">AuthState</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IDToken</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">use<wbr>Auth&lt;T&gt;<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AuthContextType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/83c988e/src/provider.tsx#L67">provider.tsx:67</a></li>
+									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/3c8922a/src/use-auth.tsx#L29">use-auth.tsx:29</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/AuthState.html" class="tsd-signature-type" data-tsd-kind="Interface">AuthState</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IDToken</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="useAuthActions" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> use<wbr>Auth<wbr>Actions</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">use<wbr>Auth<wbr>Actions<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AuthActions</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/83c988e/src/provider.tsx#L68">provider.tsx:68</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AuthActions</span></h4>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>useAuth is a hook to handle authentication.</p>
+								</div>
+								<p>T can optionally be set to your custom <code>IDToken</code> type.</p>
+								<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #008000">// true if hook is currently loading, can be used to defer loading page with a spinner.</span>
+<span style="color: #000000">  </span><span style="color: #001080">loading</span><span style="color: #000000">: </span><span style="color: #0070C1">boolean</span>
+<span style="color: #000000">  </span><span style="color: #008000">// An error that has occured during authentication phases.</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">error</span><span style="color: #000000">?: </span><span style="color: #0070C1">Error</span>
+<span style="color: #000000">  </span><span style="color: #008000">// The ID token if the authenticated user.</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">idToken</span><span style="color: #000000">?: </span><span style="color: #0070C1">T</span>
+<span style="color: #000000">  </span><span style="color: #008000">// a method to start login by redirecting browser to crossid authorization provider.</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">loginWithRedirect</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #008000">// a method to start logout by redirecting browser to crossid authorization provider.</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">logoutWithRedirect</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #008000">// returns a promise which eventually returns the access token of the authenticated user.</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">getAccessToken</span>
+<span style="color: #000000">} = </span><span style="color: #795E26">useAuth</span><span style="color: #000000">()</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDToken</span> = <span class="tsd-signature-type">IDToken</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AuthContextType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -148,15 +158,22 @@
 					<a name="withAuth" class="tsd-anchor"></a>
 					<h3>with<wbr>Auth</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">with<wbr>Auth&lt;T&gt;<span class="tsd-signature-symbol">(</span>WrappedComponent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, ErrorComponent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">AuthRequiredOpts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Element</span></li>
+						<li class="tsd-signature tsd-kind-icon">with<wbr>Auth&lt;T&gt;<span class="tsd-signature-symbol">(</span>WrappedComponent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">AuthRequiredOpts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/83c988e/src/with-auth.tsx#L16">with-auth.tsx:16</a></li>
+									<li>Defined in <a href="https://github.com/crossid/crossid-react/blob/3c8922a/src/with-auth.tsx#L21">with-auth.tsx:21</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>a high order component that renders children only if user is authenticated.
+									anonymous visitors will be redirected to the login page.</p>
+								</div>
+								<p>wrap your private routes with this high order component.</p>
+							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
@@ -167,9 +184,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>WrappedComponent: <span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5>ErrorComponent: <span class="tsd-signature-type">Function</span></h5>
 								</li>
 								<li>
 									<h5>opts: <span class="tsd-signature-type">AuthRequiredOpts</span><span class="tsd-signature-symbol"> = {}</span></h5>
@@ -213,13 +227,7 @@
 						<a href="interfaces/AuthState.html" class="tsd-kind-icon">Auth<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#CrossidAuthProvider" class="tsd-kind-icon">Crossid<wbr>Auth<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-function">
 						<a href="modules.html#useAuth" class="tsd-kind-icon">use<wbr>Auth</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useAuthActions" class="tsd-kind-icon">use<wbr>Auth<wbr>Actions</a>
 					</li>
 				</ul>
 			</nav>
