@@ -10,40 +10,23 @@
   <body>
     <div id="root"></div>
     <script src="https://unpkg.com/@babel/standalone@7.13.12/babel.min.js"></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react@17/umd/react.development.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
-    ></script>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/react-router-dom@5.2.0/umd/react-router-dom.min.js"></script>
     <script src="crossid-react.js"></script>
     <script type="text/babel">
       const { useState, useEffect } = React
-      const { CrossidAuthProvider, useAuth, useAuthActions } = reactCrossid
+      const { AuthProvider, useAuth } = reactCrossid
       const App = () => {
-        const {
-          loading,
-          user,
-          error,
-          loginWithRedirect,
-          logoutWithRedirect,
-          getAccessToken,
-        } = useAuth()
-        const [errorMsg, setErrorMsg] = useState()
+        const { loading, idToken, error, loginWithRedirect, logoutWithRedirect, getAccessToken } = useAuth()
         const [accessToken, setAccessToken] = useState()
 
-        useEffect(() => {
-          const qp = new URLSearchParams(window.location.search)
-          if (qp.has('error')) {
-            setErrorMsg(qp.get('error_description') || qp.get('error'))
-          }
-        }, [])
-
         if (error) {
-          return <div>ERROR: ${error.message}</div>
+          return (
+            <div style={{ backgroundColor: '#FEE2E2', padding: '10px' }}>
+              {error.error}: {error.error_description}
+            </div>
+          )
         }
 
         if (loading) {
@@ -52,53 +35,39 @@
 
         return (
           <div>
-            {error ||
-              (errorMsg && (
-                <div style={{ backgroundColor: '#FEE2E2', padding: '10px' }}>
-                  {error || errorMsg}
-                </div>
-              ))}
             {accessToken && (
               <div>
                 <h2>Access Token:</h2>
                 <p>{accessToken}</p>
               </div>
             )}
-            {user && (
+            {idToken && (
               <div style={{ paddingTop: '10px' }}>
                 <h2>User:</h2>
-                <p>{JSON.stringify(user)}</p>
+                <p>{JSON.stringify(idToken)}</p>
               </div>
             )}
             <div style={{ paddingTop: '15px' }}>
-              <button onClick={() => loginWithRedirect({}, '/')}>Login</button>{' '}
-              <button
-                onClick={async () => setAccessToken(await getAccessToken())}
-              >
-                Get access token
-              </button>{' '}
-              {user && (
-                <button onClick={() => logoutWithRedirect({ state: '/' }, '/')}>
-                  Logout
-                </button>
-              )}
+              {!idToken && <button onClick={() => loginWithRedirect({})}>Login</button>}
+              <button onClick={async () => setAccessToken(await getAccessToken())}>Get access token</button>{' '}
+              {idToken && <button onClick={() => logoutWithRedirect({})}>Logout</button>}
             </div>
           </div>
         )
       }
 
       ReactDOM.render(
-        <CrossidAuthProvider
+        <AuthProvider
           tenant_id="dev.local"
-          client_id="b3ZGQRRBwbXb4eDekGGNMwxvSAeWcjd8"
+          client_id="BWANpGOV61XXnlUnM6GWMIjA0N6PopeA"
           redirect_uri={`${window.location.origin}/`}
           post_logout_redirect_uri={`${window.location.origin}/`}
-          audience={['example.com']}
+          audience={['myreactapp']}
           scope="openid"
           cache_type="session_storage"
         >
           <App />
-        </CrossidAuthProvider>,
+        </AuthProvider>,
         document.getElementById('root')
       )
     </script>

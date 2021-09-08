@@ -34,7 +34,7 @@
     "url": "https://github.com/crossid/crossid-react/issues"
   },
   "dependencies": {
-    "@crossid/crossid-spa-js": "^0.1.1"
+    "@crossid/crossid-spa-js": "^0.3.0"
   },
   "peerDependencies": {
     "react": "^17.0.2"

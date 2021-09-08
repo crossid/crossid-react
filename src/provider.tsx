@@ -1,69 +1,27 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import {
   Client,
-  IDToken,
-  ClientOpts,
-  ClientDiscoveryOpts,
   ClientCrossidOpts,
-  AuthorizationOpts,
-  LogoutOpts,
-  GetAccessTokenOpts,
+  ClientDiscoveryOpts,
+  ClientOpts,
+  IDToken,
   newCrossidClient,
   newCrossidClientByDiscovery,
   newCrossidClientCustom,
 } from '@crossid/crossid-spa-js'
-import CrossidClient from '@crossid/crossid-spa-js/dist/client'
-import { useCallback } from 'react'
-
-function stub(): any {
-  throw new Error('please wrap your app with CrossidAuthProvider')
-}
+import CrossidClient, { AuthorizationOpts, GetAccessTokenOpts, LogoutOpts } from '@crossid/crossid-spa-js/dist/client'
+import AuthContext, { initialAuthState } from './provider-context'
+import { AuthProps } from './provider-options'
+import { reducer } from './reducer'
+import { authPageHasError, shouldCompleteLogin, shouldCompleteLogout } from './helper'
+import { oauth2Error as authError } from './error'
 
 /**
- * The state which is returned when using the auth hook.
+ * instantiates a new client
+ *
+ * @param props
+ * @returns
  */
-export interface AuthState<User extends IDToken = IDToken> {
-  loading: boolean
-  error?: Error
-  user?: User
-  client?: Client
-  loginWithRedirect: (opts: AuthorizationOpts, returnTo: string) => void
-  logoutWithRedirect: (opts: LogoutOpts) => void
-  getAccessToken: (opts?: GetAccessTokenOpts) => Promise<string>
-}
-
-export const AuthContext = createContext<AuthState>({
-  loading: true,
-  loginWithRedirect: stub,
-  logoutWithRedirect: stub,
-  getAccessToken: stub,
-})
-
-class AuthProviderOptsBase {
-  children: React.ReactNode
-  goTo?: (url: string) => void
-  post_logout_redirect_uri?: string
-}
-
-interface AuthProviderClientCrossidOpts
-  extends ClientCrossidOpts,
-    AuthProviderOptsBase {}
-
-interface AuthProviderClientDiscoveryOpts
-  extends ClientDiscoveryOpts,
-    AuthProviderOptsBase {}
-
-interface AuthProviderClientCustomOpts
-  extends ClientOpts,
-    AuthProviderOptsBase {}
-
-export const useCrossidAuth = () => useContext(AuthContext)
-
-type AuthProps =
-  | AuthProviderClientCrossidOpts
-  | AuthProviderClientDiscoveryOpts
-  | AuthProviderClientCustomOpts
-
 const initClient = async (props: AuthProps): Promise<CrossidClient> => {
   const opts = props
   let crossOpts = opts as ClientCrossidOpts
@@ -73,88 +31,81 @@ const initClient = async (props: AuthProps): Promise<CrossidClient> => {
     return await newCrossidClient(crossOpts)
   } else if (discoveryOpts.wellknown_endpoint) {
     return await newCrossidClientByDiscovery(discoveryOpts)
-  } else if (
-    customOpts.authorization_endpoint &&
-    customOpts.token_endpoint &&
-    customOpts.issuer
-  ) {
+  } else if (customOpts.authorization_endpoint && customOpts.token_endpoint && customOpts.issuer) {
     return await newCrossidClientCustom(customOpts)
   } else {
     throw new Error('invalid props')
   }
 }
 
-const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
-  const [client, setClient] = useState<Client>()
-  const [error, setError] = useState()
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<U | undefined>()
+/**
+ * A state that can be passed before starting the login process.
+ */
+export interface AppState {
+  return_to?: string
+  [key: string]: any
+}
 
-  const { goTo } = props
+const defaultOnRedirectTo = (state?: AppState): void => {
+  window.history.replaceState({}, document.title, state?.return_to || window.location.pathname)
+}
+
+export const AuthProvider = <T extends IDToken>(props: AuthProps): JSX.Element => {
+  const [client, setClient] = useState<Client>()
+  const [state, dispatch] = useReducer(reducer, initialAuthState)
+  const { onRedirectTo = defaultOnRedirectTo, redirect_uri, post_logout_redirect_uri, children } = props
+
   /**
-   * initializes the client upon provider initialization
+   * A constructor to initialize a client.
    */
   useEffect(() => {
-    ;(async () => {
+    ;(async (): Promise<void> => {
       if (!client) {
         try {
           const c = await initClient(props)
           setClient(c)
-          const u = await c.getUser<U>()
-          setUser(u)
         } catch (e) {
-          setError(e)
-          setLoading(false)
-        } finally {
-          return
+          dispatch({ type: 'ERROR', error: authError(e) })
         }
-      }
-
-      const { origin, pathname } = window.location
-      const sp = new URLSearchParams(window.location.search)
-      if (
-        client &&
-        origin + pathname === props.redirect_uri &&
-        sp.has('code') &&
-        !sp.has('error')
-      ) {
-        const resp = await client.handleRedirectCallback()
-        const user = await client.getUser<U>()
-        setUser(user)
-        setLoading(false)
-        if (!!resp?.state) {
-          if (goTo) {
-            goTo(resp.state)
-          } else {
-            window.history.replaceState({}, document.title, resp.state)
-          }
-        }
-      } else if (
-        client &&
-        origin + pathname === props.post_logout_redirect_uri &&
-        sp.has('state') &&
-        !sp.has('error')
-      ) {
-        const resp = await client.handleLogoutRedirectCallback()
-        setUser(undefined)
-        setLoading(false)
-        if (!!resp?.state) {
-          if (goTo) {
-            goTo(resp.state)
-          } else {
-            window.history.replaceState({}, document.title, resp.state)
-          }
-        }
-      } else {
-        setLoading(false)
       }
     })()
-    // todo: adding client causes errors
-  }, [client, goTo, props])
+  }, [client])
+
+  /**
+   * handle login & logout
+   */
+  useEffect(() => {
+    ;(async (): Promise<void> => {
+      if (client) {
+        try {
+          // complete the signin
+          if (shouldCompleteLogin(window.location, redirect_uri!)) {
+            const { state } = await client.handleRedirectCallback()
+            const idToken = await client.getUser<T>()
+            dispatch({ type: 'INITIALIZED', idToken })
+            onRedirectTo(state)
+          } else if (shouldCompleteLogout(window.location, post_logout_redirect_uri!)) {
+            const { state } = await client.handleLogoutRedirectCallback()
+            dispatch({ type: 'LOGOUT_COMPLETED' })
+            onRedirectTo(state)
+          } else if (authPageHasError(window.location, [redirect_uri!, post_logout_redirect_uri!])) {
+            const error = authPageHasError(window.location, [redirect_uri!, post_logout_redirect_uri!])
+            if (error) {
+              dispatch({ type: 'ERROR', error })
+            }
+          } else {
+            const idToken = await client.getUser<T>()
+            dispatch({ type: 'INITIALIZED', idToken })
+          }
+        } catch (e) {
+          dispatch({ type: 'ERROR', error: authError(e) })
+        }
+      }
+    })()
+  }, [client])
 
   const loginWithRedirect = useCallback(
-    (opts: AuthorizationOpts = {}, returnTo: string) => {
-      opts.state = returnTo
+    (opts: AuthorizationOpts = {}) => {
       client?.loginWithRedirect(opts)
     },
     [client]
@@ -181,18 +132,13 @@ const AuthProvider = <U extends IDToken>(props: AuthProps): JSX.Element => {
   return (
     <AuthContext.Provider
       value={{
-        user,
-        error,
-        loading,
-        client,
+        ...state,
         loginWithRedirect,
         logoutWithRedirect,
         getAccessToken,
       }}
     >
-      {props.children}
+      {children}
     </AuthContext.Provider>
   )
 }
-
-export default AuthProvider

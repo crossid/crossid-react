@@ -1,5 +1,6 @@
-import CrossidAuthProvider, { AuthState, useCrossidAuth } from './provider'
-
+import { AuthState } from './provider-context'
+import { useAuth } from './use-auth'
 import { withAuth } from './with-auth'
+import { AuthProvider, AppState } from './provider'
 
-export { CrossidAuthProvider, AuthState, useCrossidAuth as useAuth, withAuth }
+export { AuthProvider, AuthState, useAuth, withAuth, AppState }

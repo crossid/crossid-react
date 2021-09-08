@@ -21,7 +21,7 @@ yarn add @crossid/crossid-react
 Wrap your app in `AuthProvider`:
 
 ```jsx
-import { CrossidAuthProvider as AuthProvider} from '@crossid/crossid-react'
+import { AuthProvider} from '@crossid/crossid-react'
 <AuthProvider
     tenant_id="<tenant>"
     client_id="<client_id>"
@@ -35,25 +35,25 @@ import { CrossidAuthProvider as AuthProvider} from '@crossid/crossid-react'
 Put a login & logout buttons anywhere in your app:
 
 ```js
-const { user, loginWithRedirect, logoutWithRedirect } = useAuth()
+const { idToken, loginWithRedirect, logoutWithRedirect } = useAuth()
 
 return (
   <div>
-    {!user && (
+    {!idToken && (
       <button
         type="button"
         onClick={() => {
-          loginWithRedirect({}, '/')
+          loginWithRedirect({ state: { return_to: '/home' } })
         }}
       >
         Sign In
       </button>
     )}
-    {user && (
+    {idToken && (
       <button
         type="button"
         onClick={() => {
-          logoutWithRedirect({})
+          logoutWithRedirect({ state: { return_to: '/goodbye' } })
         }}
       >
         Sign Out
@@ -78,6 +78,8 @@ useEffect(() => {
     setData(resp)
 })
 ```
+
+See [playground/index.html](./playground/index.html)
 
 ## Documentation
 

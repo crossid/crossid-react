@@ -1,19 +1,31 @@
+import { AuthorizationOpts } from '@crossid/crossid-spa-js'
 import React, { useEffect, useRef, useState } from 'react'
-import { useCrossidAuth as useAuth } from './provider'
+import { useAuth } from './use-auth'
 
 export interface AuthRequiredOpts {
-  returnTo?: string
+  return_to?: string | (() => string)
+  login_opts?: AuthorizationOpts
 }
 
-export function withAuth<T>(
-  WrappedComponent: React.ComponentType<T>,
-  opts: AuthRequiredOpts = {}
-) {
+const defaultReturnTo = (): string => `${window.location.pathname}${window.location.search}`
+
+/**
+ * a high order component that renders children only if user is authenticated.
+ * anonymous visitors will be redirected to the login page.
+ *
+ * wrap your private routes with this high order component.
+ * @param WrappedComponent
+ * @param opts
+ * @returns
+ */
+export function withAuth<T>(WrappedComponent: React.ComponentType<T>, opts: AuthRequiredOpts = {}) {
   const Comp = (props: T): JSX.Element => {
     let rendered = useRef(false)
-    const [authenticated, setAuthenticated] = useState(false)
-    const { loading, client, loginWithRedirect } = useAuth()
-    const { returnTo = defaultReturnTo() } = opts
+    const { loading, loginWithRedirect, idToken } = useAuth()
+    const { return_to = defaultReturnTo, login_opts } = opts
+
+    // todo consider authorization restrictions by letting the user pass some claims assertions.
+    const authenticated = !!idToken
 
     useEffect(() => {
       rendered.current = true
@@ -21,29 +33,23 @@ export function withAuth<T>(
         return
       }
 
-      ;(async () => {
-        const at = await client?.getUser()
-        if (at && rendered) {
-          setAuthenticated(true)
-          return
-        }
-        await loginWithRedirect({}, returnTo)
+      ;(async (): Promise<void> => {
+        await loginWithRedirect({
+          ...login_opts,
+          state: {
+            return_to: typeof return_to === 'function' ? return_to() : return_to,
+          },
+        })
       })()
 
       return () => {
         rendered.current = false
       }
-    }, [authenticated, client, loading, loginWithRedirect, returnTo])
+    }, [authenticated, loading, loginWithRedirect, return_to])
 
-    return authenticated ? (
-      <WrappedComponent {...props} />
-    ) : (
-      <div>Loading...</div>
-    )
+    // todo consider customizing loading state
+    return authenticated ? <WrappedComponent {...props} /> : <div>Loading...</div>
   }
 
   return Comp
 }
-
-const defaultReturnTo = (): string =>
-  `${window.location.pathname}${window.location.search}`

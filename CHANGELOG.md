@@ -1,3 +1,11 @@
+## 0.2.0
+
+[All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.1.1...v0.2.0)
+
+### Major Changes
+
+- Combines two hooks into a single `useAuth`.
+
 ## 0.1.1
 
 [All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.1.0...v0.1.1)
