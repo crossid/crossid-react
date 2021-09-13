@@ -15,6 +15,7 @@ import { AuthProps } from './provider-options'
 import { reducer } from './reducer'
 import { authPageHasError, shouldCompleteLogin, shouldCompleteLogout } from './helper'
 import { oauth2Error as authError } from './error'
+import { JWTClaims } from '@crossid/crossid-spa-js/dist/types'
 
 /**
  * instantiates a new client
@@ -81,7 +82,7 @@ export const AuthProvider = <T extends IDToken>(props: AuthProps): JSX.Element =
           // complete the signin
           if (shouldCompleteLogin(window.location, redirect_uri!)) {
             const { state } = await client.handleRedirectCallback()
-            const idToken = await client.getUser<T>()
+            const idToken = await client.getUser<T>({ scope: 'openid' })
             dispatch({ type: 'INITIALIZED', idToken })
             onRedirectTo(state)
           } else if (shouldCompleteLogout(window.location, post_logout_redirect_uri!)) {
@@ -94,7 +95,7 @@ export const AuthProvider = <T extends IDToken>(props: AuthProps): JSX.Element =
               dispatch({ type: 'ERROR', error })
             }
           } else {
-            const idToken = await client.getUser<T>()
+            const idToken = await client.getUser<T>({ scope: 'openid' })
             dispatch({ type: 'INITIALIZED', idToken })
           }
         } catch (e) {
@@ -129,6 +130,13 @@ export const AuthProvider = <T extends IDToken>(props: AuthProps): JSX.Element =
     [client]
   )
 
+  const introspectAccessToken = useCallback(
+    async (opts: GetAccessTokenOpts = {}): Promise<JWTClaims | undefined> => {
+      return await client?.introspectAccessToken(opts)
+    },
+    [client]
+  )
+
   return (
     <AuthContext.Provider
       value={{
@@ -136,6 +144,7 @@ export const AuthProvider = <T extends IDToken>(props: AuthProps): JSX.Element =
         loginWithRedirect,
         logoutWithRedirect,
         getAccessToken,
+        introspectAccessToken,
       }}
     >
       {children}

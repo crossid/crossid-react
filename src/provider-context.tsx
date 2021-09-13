@@ -1,4 +1,5 @@
 import { AuthorizationOpts, GetAccessTokenOpts, IDToken, LogoutOpts, OAuth2Error } from '@crossid/crossid-spa-js'
+import { JWTClaims } from '@crossid/crossid-spa-js/dist/types'
 import { createContext } from 'react'
 import { AppState } from './provider'
 
@@ -55,6 +56,18 @@ export interface AuthMethods {
    * ```
    */
   getAccessToken: (opts?: GetAccessTokenOpts) => Promise<string>
+
+  /**
+   * Returns the decoded claims of the access token.
+   * handful for protecting spa routes by claims such 'scp'
+   *
+   * note: this method does not actually perform idp introspection nor checks the validity of the token.
+   *
+   * ```js
+   * const token = await introspectAccessToken()
+   * ```
+   */
+  introspectAccessToken: (opts?: GetAccessTokenOpts) => Promise<JWTClaims | undefined>
 }
 
 /**
@@ -64,6 +77,7 @@ const initialAuthMetods: AuthMethods = {
   loginWithRedirect: stub,
   logoutWithRedirect: stub,
   getAccessToken: stub,
+  introspectAccessToken: stub,
 }
 
 /**

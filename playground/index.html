@@ -18,8 +18,17 @@
       const { useState, useEffect } = React
       const { AuthProvider, useAuth } = reactCrossid
       const App = () => {
-        const { loading, idToken, error, loginWithRedirect, logoutWithRedirect, getAccessToken } = useAuth()
+        const {
+          loading,
+          idToken,
+          error,
+          loginWithRedirect,
+          logoutWithRedirect,
+          getAccessToken,
+          introspectAccessToken,
+        } = useAuth()
         const [accessToken, setAccessToken] = useState()
+        const [accessTokenClaims, setAccessTokenClaims] = useState()
 
         if (error) {
           return (
@@ -41,6 +50,12 @@
                 <p>{accessToken}</p>
               </div>
             )}
+            {accessTokenClaims && (
+              <div>
+                <h2>Access Token Claims:</h2>
+                <p>{JSON.stringify(accessTokenClaims)}</p>
+              </div>
+            )}
             {idToken && (
               <div style={{ paddingTop: '10px' }}>
                 <h2>User:</h2>
@@ -49,7 +64,12 @@
             )}
             <div style={{ paddingTop: '15px' }}>
               {!idToken && <button onClick={() => loginWithRedirect({})}>Login</button>}
-              <button onClick={async () => setAccessToken(await getAccessToken())}>Get access token</button>{' '}
+              <button onClick={async () => setAccessToken(await getAccessToken({ scope: 'openid' }))}>
+                Get access token
+              </button>{' '}
+              <button onClick={async () => setAccessTokenClaims(await introspectAccessToken({ scope: 'openid' }))}>
+                Introspect access token
+              </button>{' '}
               {idToken && <button onClick={() => logoutWithRedirect({})}>Logout</button>}
             </div>
           </div>
@@ -59,11 +79,11 @@
       ReactDOM.render(
         <AuthProvider
           tenant_id="dev.local"
-          client_id="BWANpGOV61XXnlUnM6GWMIjA0N6PopeA"
+          client_id="lJ7s5vGuGzbmv0QjXQrmKRx0HpTHw9Hw"
           redirect_uri={`${window.location.origin}/`}
           post_logout_redirect_uri={`${window.location.origin}/`}
-          audience={['myreactapp']}
-          scope="openid"
+          audience={['myapp']}
+          scope="openid email profile"
           cache_type="session_storage"
         >
           <App />
