@@ -1,7 +1,7 @@
 {
   "author": "Crossid",
   "name": "@crossid/crossid-react",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Openid authentication hooks for React",
   "main": "index.js",
   "module": "dist/index.js",
@@ -34,7 +34,7 @@
     "url": "https://github.com/crossid/crossid-react/issues"
   },
   "dependencies": {
-    "@crossid/crossid-spa-js": "^0.3.2"
+    "@crossid/crossid-spa-js": "^0.4.1"
   },
   "peerDependencies": {
     "react": "^17.0.2"

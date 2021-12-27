@@ -1,3 +1,11 @@
+## 0.2.2
+
+[All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.1...v0.2.2)
+
+### Major Changes
+
+- Upgrade crossid-spa-js dependency to 0.4.1.
+
 ## 0.2.1
 
 [All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.0...v0.2.1)
