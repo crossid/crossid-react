@@ -1,5 +1,5 @@
 import { AuthorizationOpts } from '@crossid/crossid-spa-js'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useAuth } from './use-auth'
 
 export interface AuthRequiredOpts {
@@ -8,6 +8,11 @@ export interface AuthRequiredOpts {
 }
 
 const defaultReturnTo = (): string => `${window.location.pathname}${window.location.search}`
+
+const isExpired = (exp: number): boolean => {
+  const nowSecondsTS = Date.now() / 1000
+  return nowSecondsTS >= exp
+}
 
 /**
  * a high order component that renders children only if user is authenticated.
@@ -25,7 +30,7 @@ export function withAuth<T>(WrappedComponent: React.ComponentType<T>, opts: Auth
     const { return_to = defaultReturnTo, login_opts } = opts
 
     // todo consider authorization restrictions by letting the user pass some claims assertions.
-    const authenticated = !!idToken
+    const authenticated = !!idToken && !isExpired(idToken.exp || 0)
 
     useEffect(() => {
       rendered.current = true
