@@ -37,7 +37,7 @@
     "@crossid/crossid-spa-js": "^0.4.1"
   },
   "peerDependencies": {
-    "react": "^17.0.2"
+    "react": "^17 || ^18"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",
