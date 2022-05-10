@@ -1,3 +1,11 @@
+## 0.2.3
+
+[All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.2...v0.2.3)
+
+### Minor Changes
+
+- support for React 17 and 18.
+
 ## 0.2.2
 
 [All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.1...v0.2.2)

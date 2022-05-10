@@ -1,7 +1,7 @@
 {
   "author": "Crossid",
   "name": "@crossid/crossid-react",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Openid authentication hooks for React",
   "main": "index.js",
   "module": "dist/index.js",
