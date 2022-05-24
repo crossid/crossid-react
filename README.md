@@ -24,6 +24,7 @@ Wrap your app in `AuthProvider`:
 import { AuthProvider} from '@crossid/crossid-react'
 <AuthProvider
     tenant_id="<tenant>"
+    region="us"
     client_id="<client_id>"
     redirect_uri={`${window.location.origin}/`}
     post_logout_redirect_uri={`${window.location.origin}/`}
@@ -39,6 +40,11 @@ const { idToken, loginWithRedirect, logoutWithRedirect } = useAuth()
 
 return (
   <div>
+    {!idToken && (
+      <button type="button" onClick={() => signupWithRedirect({ state: { return_to: '/home' } })}>
+        Signup
+      </button>
+    )}
     {!idToken && (
       <button
         type="button"

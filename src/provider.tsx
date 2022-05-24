@@ -122,6 +122,13 @@ export const AuthProvider = <T extends IDToken>(props: AuthProps): JSX.Element =
     [client]
   )
 
+  const signupWithRedirect = useCallback(
+    (opts: AuthorizationOpts = {}) => {
+      client?.signupWithRedirect(opts)
+    },
+    [client]
+  )
+
   const getAccessToken = useCallback(
     async (opts: GetAccessTokenOpts = {}): Promise<string> => {
       const act = await client?.getAccessToken(opts)
@@ -141,6 +148,7 @@ export const AuthProvider = <T extends IDToken>(props: AuthProps): JSX.Element =
     <AuthContext.Provider
       value={{
         ...state,
+        signupWithRedirect,
         loginWithRedirect,
         logoutWithRedirect,
         getAccessToken,

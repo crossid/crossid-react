@@ -24,6 +24,7 @@
           error,
           loginWithRedirect,
           logoutWithRedirect,
+          signupWithRedirect,
           getAccessToken,
           introspectAccessToken,
         } = useAuth()
@@ -63,6 +64,7 @@
               </div>
             )}
             <div style={{ paddingTop: '15px' }}>
+              {!idToken && <button onClick={() => signupWithRedirect({})}>Signup</button>}
               {!idToken && <button onClick={() => loginWithRedirect({})}>Login</button>}
               <button onClick={async () => setAccessToken(await getAccessToken({ scope: 'openid' }))}>
                 Get access token
@@ -78,7 +80,8 @@
 
       ReactDOM.render(
         <AuthProvider
-          tenant_id="dev.local"
+          tenant_id="dev1"
+          region="us.local"
           client_id="lJ7s5vGuGzbmv0QjXQrmKRx0HpTHw9Hw"
           redirect_uri={`${window.location.origin}/`}
           post_logout_redirect_uri={`${window.location.origin}/`}

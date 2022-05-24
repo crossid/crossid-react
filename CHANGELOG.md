@@ -1,3 +1,13 @@
+## 0.2.4
+
+[All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.3...v0.2.4)
+
+### Major Changes
+
+- Support for crossid tenant's region configuration.
+- `signupWithRedirect()` method
+- upgrade `@crossid/crossid-spa-js` to v0.4.3
+
 ## 0.2.3
 
 [All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.2...v0.2.3)

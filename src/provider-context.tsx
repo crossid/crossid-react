@@ -30,6 +30,16 @@ export const initialAuthState: AuthState = {
  */
 export interface AuthMethods {
   /**
+   * Sign user up.
+   *
+   * ```ts
+   * signupWithRedirect({redirectUri: "/home"})
+   * ```
+   *
+   */
+  signupWithRedirect: (opts: AuthorizationOpts) => void
+
+  /**
    * Logs user in.
    *
    * ```ts
@@ -74,6 +84,7 @@ export interface AuthMethods {
  * initial state of AuthMethods
  */
 const initialAuthMetods: AuthMethods = {
+  signupWithRedirect: stub,
   loginWithRedirect: stub,
   logoutWithRedirect: stub,
   getAccessToken: stub,
