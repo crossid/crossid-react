@@ -28,7 +28,7 @@ const initClient = async (props: AuthProps): Promise<CrossidClient> => {
   let crossOpts = opts as ClientCrossidOpts
   let discoveryOpts = opts as ClientDiscoveryOpts
   let customOpts = opts as ClientOpts
-  if (crossOpts.tenant_id) {
+  if (crossOpts.domain) {
     return await newCrossidClient(crossOpts)
   } else if (discoveryOpts.wellknown_endpoint) {
     return await newCrossidClientByDiscovery(discoveryOpts)
