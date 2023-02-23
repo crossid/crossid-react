@@ -1,3 +1,11 @@
+## 0.2.5
+
+[All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.4...v0.2.5)
+
+### Major Changes
+
+- upgrade `@crossid/crossid-spa-js` to v0.4.4
+
 ## 0.2.4
 
 [All Changes](https://github.com/crossid/crossid-spa-js/compare/v0.2.3...v0.2.4)
